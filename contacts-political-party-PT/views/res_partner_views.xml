@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_partner_form_inherit_custom" model="ir.ui.view">
+        <field name="name">res.partner.form.inherit.custom.fields</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <page string="Dados Complementares" name="custom_dados_complementares">
+                    <group string="Filiação">
+                        <field name="is_affiliated"/>
+                    </group>
+                    <group string="Informações Pessoais" attrs="{'invisible': [('is_affiliated', '=', False)]}">
+                        <field name="cnf_number"/>
+                        <field name="social_name"/>
+                        <field name="political_name"/>
+                        <field name="birth_date"/>
+                        <field name="gender_identity"/>
+                        <field name="sexual_orientation"/>
+                        <field name="ethnicity"/>
+                        <field name="religion"/>
+                    </group>
+                    <group string="Abonador" attrs="{'invisible': [('is_affiliated', '=', False)]}">
+                        <field name="abonador_id" context="{'default_is_affiliated': True}"/>
+                        <field name="abonador_cnf"/>
+                    </group>
+                </page>
+
+                <page string="Dados Partidários" name="custom_dados_partidarios" attrs="{'invisible': [('is_affiliated', '=', False)]}">
+                    <group>
+                        <field name="affiliation_date"/>
+                        <field name="disaffiliation_date"/>
+                    </group>
+                    <group string="Setoriais de Atuação">
+                        <field name="sectorial_ids" widget="many2many_tags"/>
+                    </group>
+                </page>
+
+                <page string="Dados Eleitorais" name="custom_dados_eleitorais" attrs="{'invisible': [('is_affiliated', '=', False)]}">
+                    <group>
+                        <field name="voter_registration"/>
+                        <field name="electoral_zone"/>
+                        <field name="electoral_section"/>
+                    </group>
+                    <group string="Local de Filiação">
+                        <field name="country_of_affiliation"/>
+                        <field name="state_of_affiliation" options="{'no_create': True}"/>
+                        <field name="city_of_affiliation" options="{'no_create': True}"/>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>
