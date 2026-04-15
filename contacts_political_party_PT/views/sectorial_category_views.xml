@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!-- Vista em lista (antes tree) -->
+    <!-- Vista em lista -->
     <record id="view_sectorial_category_list" model="ir.ui.view">
         <field name="name">sectorial.category.list</field>
         <field name="model">sectorial.category</field>
@@ -43,11 +43,11 @@
         </field>
     </record>
 
-    <!-- Menu -->
+    <!-- Menu dentro de Configurações -->
     <menuitem id="menu_sectorial_category_config"
               name="Setoriais de Atuação"
-              parent="contacts.menu_contacts_configuration"
+              parent="base.menu_base_configuration"
               action="action_sectorial_category"
-              sequence="10"
+              sequence="90"
               groups="base.group_system"/>
 </odoo>
