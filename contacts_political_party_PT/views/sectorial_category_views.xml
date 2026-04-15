@@ -1,17 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <record id="view_sectorial_category_tree" model="ir.ui.view">
-        <field name="name">sectorial.category.tree</field>
+    <!-- Vista em lista (antes tree) -->
+    <record id="view_sectorial_category_list" model="ir.ui.view">
+        <field name="name">sectorial.category.list</field>
         <field name="model">sectorial.category</field>
         <field name="arch" type="xml">
-            <tree string="Setoriais de Atuação">
+            <list string="Setoriais de Atuação">
                 <field name="sequence" widget="handle"/>
                 <field name="name"/>
                 <field name="active"/>
-            </tree>
+            </list>
         </field>
     </record>
 
+    <!-- Vista em formulário -->
     <record id="view_sectorial_category_form" model="ir.ui.view">
         <field name="name">sectorial.category.form</field>
         <field name="model">sectorial.category</field>
@@ -29,10 +31,11 @@
         </field>
     </record>
 
+    <!-- Ação de janela -->
     <record id="action_sectorial_category" model="ir.actions.act_window">
         <field name="name">Setoriais de Atuação</field>
         <field name="res_model">sectorial.category</field>
-        <field name="view_mode">tree,form</field>
+        <field name="view_mode">list,form</field>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">
                 Crie novos setoriais de atuação para classificar os contactos filiados.
@@ -40,6 +43,7 @@
         </field>
     </record>
 
+    <!-- Menu -->
     <menuitem id="menu_sectorial_category_config"
               name="Setoriais de Atuação"
               parent="contacts.menu_contacts_configuration"
