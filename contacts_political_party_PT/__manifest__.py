@@ -1,6 +1,6 @@
 {
     'name': 'Campos Personalizados para Contatos - Dados Complementares - Partido Político PT',
-    'version': '18.0.1.0.0',
+    'version': '19.0.1.0.0',
     'category': 'Sales',
     'summary': 'Adiciona campos de filiação, dados eleitorais e setoriais',
     'description': """
