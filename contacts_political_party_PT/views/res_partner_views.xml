@@ -10,7 +10,7 @@
                     <group string="Filiação">
                         <field name="is_affiliated"/>
                     </group>
-                    <group string="Informações Pessoais" attrs="{'invisible': [('is_affiliated', '=', False)]}">
+                    <group string="Informações Pessoais" invisible="not is_affiliated">
                         <field name="cnf_number"/>
                         <field name="social_name"/>
                         <field name="political_name"/>
@@ -20,13 +20,13 @@
                         <field name="ethnicity"/>
                         <field name="religion"/>
                     </group>
-                    <group string="Abonador" attrs="{'invisible': [('is_affiliated', '=', False)]}">
+                    <group string="Abonador" invisible="not is_affiliated">
                         <field name="abonador_id" context="{'default_is_affiliated': True}"/>
                         <field name="abonador_cnf"/>
                     </group>
                 </page>
 
-                <page string="Dados Partidários" name="custom_dados_partidarios" attrs="{'invisible': [('is_affiliated', '=', False)]}">
+                <page string="Dados Partidários" name="custom_dados_partidarios" invisible="not is_affiliated">
                     <group>
                         <field name="affiliation_date"/>
                         <field name="disaffiliation_date"/>
@@ -36,7 +36,7 @@
                     </group>
                 </page>
 
-                <page string="Dados Eleitorais" name="custom_dados_eleitorais" attrs="{'invisible': [('is_affiliated', '=', False)]}">
+                <page string="Dados Eleitorais" name="custom_dados_eleitorais" invisible="not is_affiliated">
                     <group>
                         <field name="voter_registration"/>
                         <field name="electoral_zone"/>
