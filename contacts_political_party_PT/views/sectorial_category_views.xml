@@ -42,12 +42,4 @@
             </p>
         </field>
     </record>
-
-    <!-- Menu dentro de Configurações -->
-    <menuitem id="menu_sectorial_category_config"
-              name="Setoriais de Atuação"
-              parent="base.menu_base_configuration"
-              action="action_sectorial_category"
-              sequence="90"
-              groups="base.group_system"/>
 </odoo>
