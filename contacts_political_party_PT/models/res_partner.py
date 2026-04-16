@@ -9,7 +9,7 @@ class ResPartner(models.Model):
     # Dados Complementares
     # ------------------------------------------------------------
     is_affiliated = fields.Boolean(string='É filiado?', default=False)
-    cnf_number = fields.Char(string='CNF Numérico', help='9 dígitos numéricos', size=9)
+    cnf_number = fields.Char(string='CNF', help='9 dígitos numéricos', size=9)
     social_name = fields.Char(string='Nome Social')
     political_name = fields.Char(string='Nome Político')
     birth_date = fields.Date(string='Data de Nascimento')
@@ -56,6 +56,48 @@ class ResPartner(models.Model):
     abonador_id = fields.Many2one('res.partner', string='Abonador',
                                   domain=[('is_affiliated', '=', True)])
     abonador_cnf = fields.Char(related='abonador_id.cnf_number', string='CNF do Abonador', readonly=True)
+    
+    # Campo auxiliar para pesquisa de abonador por CNF
+    abonador_search = fields.Char(string='Buscar Abonador (CNF ou Nome)', 
+                                  compute='_compute_abonador_search',
+                                  inverse='_inverse_abonador_search',
+                                  search='_search_abonador')
+    
+    def _compute_abonador_search(self):
+        """Computa o valor do campo de busca baseado no abonador selecionado."""
+        for record in self:
+            if record.abonador_id:
+                record.abonador_search = f"{record.abonador_id.display_name} ({record.abonador_id.cnf_number})"
+            else:
+                record.abonador_search = False
+    
+    def _inverse_abonador_search(self):
+        """Permite definir o abonador através do campo de busca."""
+        for record in self:
+            if record.abonador_search:
+                # Tenta buscar por CNF primeiro (9 dígitos)
+                search_value = record.abonador_search.strip()
+                clean_cnf = re.sub(r'\D', '', search_value)
+                
+                partner_domain = [('is_affiliated', '=', True)]
+                
+                if len(clean_cnf) == 9:
+                    # Busca por CNF
+                    partner_domain.append(('cnf_number', '=', clean_cnf))
+                else:
+                    # Busca por nome
+                    partner_domain.append(('name', 'ilike', search_value))
+                
+                partner = self.search(partner_domain, limit=1)
+                if partner:
+                    record.abonador_id = partner
+            else:
+                record.abonador_id = False
+    
+    def _search_abonador(self, operator, value):
+        """Permite pesquisar parceiros pelo campo de busca do abonador."""
+        # Esta função é usada para domínios de pesquisa
+        return []
 
     # ------------------------------------------------------------
     # Dados Partidários
@@ -129,3 +171,13 @@ class ResPartner(models.Model):
                     if 'disaffiliation_date' not in vals or not vals.get('disaffiliation_date'):
                         raise ValidationError(_('Ao desfiliar o contato, é obrigatório preencher a Data de Desfiliação.'))
         return super(ResPartner, self).write(vals)
+
+    @api.onchange('cnf_number')
+    def _onchange_cnf_number(self):
+        """Completa automaticamente com zeros à esquerda para 9 dígitos."""
+        if self.cnf_number:
+            # Remove caracteres não numéricos
+            clean_cnf = re.sub(r'\D', '', self.cnf_number)
+            # Completa com zeros à esquerda para 9 dígitos
+            if len(clean_cnf) <= 9:
+                self.cnf_number = clean_cnf.zfill(9)
