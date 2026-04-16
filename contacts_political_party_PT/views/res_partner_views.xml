@@ -5,8 +5,8 @@
         <field name="model">res.partner</field>
         <field name="inherit_id" ref="base.view_partner_form"/>
         <field name="arch" type="xml">
-            <!-- Campos É FILIADO e CNF na seção principal -->
-            <xpath expr="//field[@name='phone']" position="before">
+            <!-- Campos É FILIADO e CNF na seção principal, junto com dados de contato -->
+            <xpath expr="//field[@name='company_type']" position="after">
                 <field name="is_affiliated"/>
                 <field name="cnf_number" invisible="is_affiliated == False"/>
             </xpath>
@@ -43,9 +43,6 @@
                     <group string="Setoriais de Atuação">
                         <field name="sectorial_ids" widget="many2many_tags"/>
                     </group>
-                    <group string="Seção">
-                        <field name="electoral_section"/>
-                    </group>
                 </page>
 
                 <!-- Dados Eleitorais (terceira aba) -->
@@ -53,6 +50,7 @@
                     <group>
                         <field name="voter_registration"/>
                         <field name="electoral_zone"/>
+                        <field name="electoral_section"/>
                     </group>
                     <group string="Local de Filiação">
                         <field name="country_of_affiliation"/>

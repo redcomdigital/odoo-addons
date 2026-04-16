@@ -14,39 +14,39 @@ class ResPartner(models.Model):
     political_name = fields.Char(string='Nome Político')
     birth_date = fields.Date(string='Data de Nascimento')
     gender_identity = fields.Selection([
-        ('woman', 'Mulher'),
         ('man', 'Homem'),
+        ('non_binary', 'Não Binário'),
         ('trans_man', 'Homem Trans'),
         ('trans_woman', 'Mulher Trans'),
         ('travesti', 'Travesti'),
-        ('non_binary', 'Não Binário'),
+        ('woman', 'Mulher'),
     ], string='Identidade de Gênero')
     sexual_orientation = fields.Selection([
-        ('lesbian', 'Lésbica'),
-        ('gay', 'Gay'),
         ('bisexual', 'Bissexual'),
+        ('gay', 'Gay'),
         ('heterosexual', 'Heterossexual'),
-        ('pansexual', 'Pansexual'),
+        ('lesbian', 'Lésbica'),
         ('not_declared', 'Não Declarado'),
         ('other', 'Outros'),
+        ('pansexual', 'Pansexual'),
     ], string='Orientação Sexual')
     ethnicity = fields.Selection([
-        ('yellow', 'Amarelo'),
+        ('black', 'Preto'),
         ('brown', 'Pardo'),
-        ('white', 'Branco'),
         ('indigenous', 'Indígena'),
         ('not_informed', 'Não Informado'),
-        ('black', 'Preto'),
+        ('white', 'Branco'),
+        ('yellow', 'Amarelo'),
     ], string='Etnia')
     religion = fields.Selection([
-        ('catholic', 'Católica'),
         ('buddhist', 'Budista'),
-        ('spiritist', 'Espírita'),
+        ('catholic', 'Católica'),
         ('evangelical', 'Evangélica'),
         ('islamic', 'Islâmica'),
         ('jewish', 'Judaica'),
-        ('other', 'Outra'),
         ('no_religion', 'Sem Religião'),
+        ('other', 'Outra'),
+        ('spiritist', 'Espírita'),
         ('umbanda', 'Umbanda/Candomblé'),
     ], string='Religião')
 
@@ -181,3 +181,24 @@ class ResPartner(models.Model):
             # Completa com zeros à esquerda para 9 dígitos
             if len(clean_cnf) <= 9:
                 self.cnf_number = clean_cnf.zfill(9)
+
+    # ------------------------------------------------------------
+    # Pesquisa por CNF ou Nome
+    # ------------------------------------------------------------
+    def name_get(self):
+        result = []
+        for partner in self:
+            if partner.cnf_number:
+                name = f"{partner.cnf_number} - {partner.name}" if partner.cnf_number else partner.name
+            else:
+                name = partner.name
+            result.append((partner.id, name))
+        return result
+
+    @api.model
+    def _name_search(self, name, args=None, operator='ilike', limit=100, name_get_uid=None):
+        args = args or []
+        domain = []
+        if name:
+            domain = ['|', ('name', operator, name), ('cnf_number', operator, name)]
+        return self._search(domain + args, limit=limit, access_rights_uid=name_get_uid)
