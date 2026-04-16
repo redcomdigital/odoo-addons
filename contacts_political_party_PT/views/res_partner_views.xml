@@ -5,47 +5,59 @@
         <field name="model">res.partner</field>
         <field name="inherit_id" ref="base.view_partner_form"/>
         <field name="arch" type="xml">
+            <!-- Campos É FILIADO e CNF na seção principal -->
+            <xpath expr="//field[@name='phone']" position="before">
+                <field name="is_affiliated"/>
+                <field name="cnf_number" invisible="is_affiliated == False"/>
+            </xpath>
+
             <xpath expr="//notebook" position="inside">
-                <page string="Dados Complementares" name="custom_dados_complementares">
-                    <group string="Filiação">
-                        <field name="is_affiliated"/>
-                    </group>
-                    <group string="Informações Pessoais" invisible="is_affiliated == False">
-                        <field name="cnf_number"/>
+                <!-- Dados Complementares (primeira aba) -->
+                <page string="Dados Complementares" name="custom_dados_complementares" invisible="is_affiliated == False">
+                    <group string="Informações Pessoais">
                         <field name="social_name"/>
-                        <field name="political_name"/>
                         <field name="birth_date"/>
                         <field name="gender_identity"/>
                         <field name="sexual_orientation"/>
                         <field name="ethnicity"/>
                         <field name="religion"/>
                     </group>
-                    <group string="Abonador" invisible="is_affiliated == False">
-                        <field name="abonador_id" context="{'default_is_affiliated': True}"/>
+                    <group string="Abonador">
+                        <field name="abonador_search" string="Buscar por CNF ou Nome" 
+                               placeholder="Digite o CNF (9 dígitos) ou nome do abonador"/>
+                        <field name="abonador_id" invisible="abonador_search" 
+                               context="{'default_is_affiliated': True}" 
+                               domain="[('is_affiliated', '=', True)]"
+                               options="{'always_reload': True}"/>
                         <field name="abonador_cnf"/>
                     </group>
                 </page>
 
+                <!-- Dados Partidários (segunda aba) -->
                 <page string="Dados Partidários" name="custom_dados_partidarios" invisible="is_affiliated == False">
                     <group>
                         <field name="affiliation_date"/>
                         <field name="disaffiliation_date"/>
+                        <field name="political_name"/>
                     </group>
                     <group string="Setoriais de Atuação">
                         <field name="sectorial_ids" widget="many2many_tags"/>
                     </group>
+                    <group string="Seção">
+                        <field name="electoral_section"/>
+                    </group>
                 </page>
 
+                <!-- Dados Eleitorais (terceira aba) -->
                 <page string="Dados Eleitorais" name="custom_dados_eleitorais" invisible="is_affiliated == False">
                     <group>
                         <field name="voter_registration"/>
                         <field name="electoral_zone"/>
-                        <field name="electoral_section"/>
                     </group>
                     <group string="Local de Filiação">
                         <field name="country_of_affiliation"/>
                         <field name="state_of_affiliation" options="{'no_create': True}"/>
-                        <field name="city_of_affiliation" options="{'no_create': True}"/>
+                        <field name="city_of_affiliation" options="{'no_create': True, 'no_open': True}"/>
                     </group>
                 </page>
             </xpath>
